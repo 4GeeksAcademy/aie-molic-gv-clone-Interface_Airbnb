@@ -6,23 +6,23 @@
 
 ## Fase A — Inspección y preparación (P0)
 
-### - [ ] HOME-001 — Inspeccionar punto de partida
+### - [x] HOME-001 — Inspeccionar punto de partida
 - **Trabajo:** revisar la implementación actual de Home, `ProductCard`, layout/estilos globales y scripts disponibles; proponer adaptación o reutilización sin tocar archivos todavía.
-- **Archivos previstos:** solo lectura: `app/page.tsx`, `app/layout.tsx`, `app/globals.css`, `components/ProductCard.tsx`, `package.json`, `context.md`, esta spec y `plan.md`.
+- **Archivos previstos:** solo lectura: `app/page.tsx`, `app/layout.tsx`, `app/globals.css`, `components/ProductCard.tsx` (no existe actualmente), `package.json`, `context.md`, esta spec y `plan.md`.
 - **Dependencias:** ninguna.
 - **Aceptación:** se conoce contenido y función actuales; se decide cómo evitar duplicar `ProductCard` y se identifican los comandos existentes.
 - **Pruebas:** inspección de estructura; no requiere ejecutar build todavía.
 
 ## Fase B — Modelo y datos simulados (P0)
 
-### - [ ] HOME-002 — Definir tipos compartidos mínimos
+### - [x] HOME-002 — Definir tipos compartidos mínimos
 - **Trabajo:** definir `Accommodation`, `Host`, `Amenity` y `Category` en TypeScript con campos alineados con `spec.md`.
 - **Archivos previstos:** `types/accommodation.ts`, `types/category.ts` (Host/Amenity pueden estar en el módulo accommodation si se justifica).
 - **Dependencias:** HOME-001.
 - **Aceptación:** contratos compilan; campos de tarjeta, filtro, detalle y enlaces están tipados sin `any`.
 - **Pruebas:** ejecutar typecheck existente o `tsc --noEmit` si es compatible.
 
-### - [ ] HOME-003 — Crear fuentes de datos Home
+### - [x] HOME-003 — Crear fuentes de datos Home
 - **Trabajo:** preparar alojamientos y categorías simuladas tipadas, con ids únicos y categoryIds que correspondan a categorías existentes. Usar Todo, Alojamientos y Hoteles como categorías iniciales; Todo representa ausencia de filtro y las otras dos deben permitir demostrar filtrado. Usar contenido e imágenes placeholder propios y mantener campos compatibles con rutas futuras.
 - **Archivos previstos:** `data/accommodations.ts`, `data/categories.ts`.
 - **Dependencias:** HOME-002.
@@ -31,28 +31,28 @@
 
 ## Fase C — Presentación reutilizable (P0)
 
-### - [ ] HOME-004 — Crear indicador de carga
+### - [x] HOME-004 — Crear indicador de carga
 - **Trabajo:** implementar estado visible y semántico de carga como componente funcional `const` y con estilos Tailwind.
 - **Archivos previstos:** `components/shared/LoadingIndicator.tsx` (o ubicación común acordada en HOME-001).
 - **Dependencias:** HOME-001.
 - **Aceptación:** renderiza etiqueta predeterminada u opcional, sin estilo inline ni estado innecesario.
 - **Pruebas:** renderizado manual; lint y typecheck.
 
-### - [ ] HOME-005 — Crear identidad/logo propio
+### - [x] HOME-005 — Crear identidad/logo propio
 - **Trabajo:** crear componente/logo propio inspirado visualmente en patrones generales de la referencia, con SVG escrito para el proyecto o recurso local; no copiar el logo oficial, la marca ni activos Airbnb. Enlace opcional a Home con `Link`.
 - **Archivos previstos:** `components/layout/Logo.tsx`, recurso bajo `public/` solo si se decide recurso local.
 - **Dependencias:** HOME-001.
 - **Aceptación:** recurso original/local con inspiración visual general, no reproducción del logo oficial; etiqueta accesible, enlace interno válido cuando aplique; sin biblioteca de iconos/UI.
 - **Pruebas:** verificar render, href interno y lint.
 
-### - [ ] HOME-006 — Implementar tarjeta de alojamiento reutilizable
+### - [x] HOME-006 — Implementar tarjeta de alojamiento reutilizable
 - **Trabajo:** adaptar o crear tarjeta con fotografía placeholder/local grande y redondeada, título, ubicación, precio/noche y valoración con estrella, con navegación al id. Incluir corazón decorativo no interactivo; distintivo de recomendación opcional. No añadir funcionalidades.
 - **Archivos previstos:** `components/listings/AccommodationCard.tsx`; `components/ProductCard.tsx` únicamente si HOME-001 aprobó adaptación/migración.
 - **Dependencias:** HOME-002, HOME-003, HOME-005 si se requiere identidad auxiliar.
 - **Aceptación:** no duplica una tarjeta existente; datos tipados y `Link` a `/rooms/{id}`; alt útil; corazón sin acción ni estado y distintivo solo visual.
 - **Pruebas:** comprobar en DOM los campos y href; lint/typecheck disponibles.
 
-### - [ ] HOME-007 — Implementar cuadrícula y estado vacío
+### - [x] HOME-007 — Implementar cuadrícula y estado vacío
 - **Trabajo:** crear cuadrícula responsive que compone `AccommodationCard` y un mensaje explícito de resultados vacíos.
 - **Archivos previstos:** `components/listings/AccommodationGrid.tsx`.
 - **Dependencias:** HOME-006.
@@ -61,21 +61,21 @@
 
 ## Fase D — Controles de búsqueda y navegación (P0)
 
-### - [ ] HOME-008 — Implementar búsqueda controlada
+### - [x] HOME-008 — Implementar búsqueda controlada
 - **Trabajo:** implementar `SearchBar` como campo controlado que propaga cada cambio mediante callback, sin estado duplicado.
 - **Archivos previstos:** `components/search/SearchBar.tsx`.
 - **Dependencias:** HOME-001.
 - **Aceptación:** valor refleja prop; entrada notifica el nuevo valor; etiqueta/nombre accesible y navegación teclado funcional.
 - **Pruebas:** escribir, borrar, usar teclado; verificar callback; lint/typecheck.
 
-### - [ ] HOME-009 — Implementar filtros de categorías
+### - [x] HOME-009 — Implementar filtros de categorías
 - **Trabajo:** crear `CategoryFilters` como fila horizontal de filtros redondeados, potencialmente desplazable, con selección activa diferenciada y handler controlado; iconos propios/locales. Usar Todo, Alojamientos y Hoteles como taxonomía inicial; Todo corresponde a `null` (sin filtro), y las otras opciones aplican sus filtros. Categorías adicionales podrán considerarse después sin atribuirlas a la captura ni ampliar ahora el alcance.
 - **Archivos previstos:** `components/listings/CategoryFilters.tsx`, `data/categories.ts` (si HOME-003 aún no lo creó, no duplicar).
 - **Dependencias:** HOME-002, HOME-003.
 - **Aceptación:** Todo aparece activo inicialmente y equivale a `null`; Alojamientos/Hoteles actualizan el filtro y click/teclado propaga selección; volver a Todo retira el filtro. Fila accesible y desplazable a 375 px. Los iconos no dependen de bibliotecas preconstruidas.
 - **Pruebas:** probar selección, limpieza y desplazamiento horizontal en 375 px; lint/typecheck.
 
-### - [ ] HOME-010 — Implementar Navbar y composición
+### - [x] HOME-010 — Implementar Navbar y composición
 - **Trabajo:** componer Logo, SearchBar y controles/iconos del menú de usuario. Los controles sin funcionalidad especificada no aparentan una acción funcional no implementada.
 - **Archivos previstos:** `components/layout/Navbar.tsx`; componente pequeño de controles solo si aprobado en plan.
 - **Dependencias:** HOME-005, HOME-008.
@@ -84,21 +84,21 @@
 
 ## Fase E — Integración funcional Home (P0)
 
-### - [ ] HOME-011 — Conectar estado, carga simulada y efectos
+### - [x] HOME-011 — Conectar estado, carga simulada y efectos
 - **Trabajo:** actualizar `app/page.tsx` para mantener lista inicialmente vacía, `loading=true`, crear `useEffect` con timeout ~1 s, cargar datos simulados, apagar loading y limpiar timeout al desmontar.
 - **Archivos previstos:** `app/page.tsx`.
 - **Dependencias:** HOME-003, HOME-004, HOME-007, HOME-010.
 - **Aceptación:** indicador inicial visible; datos aparecen tras simulación; cleanup ejecutado; carga y estado de resultados no se confunden.
 - **Pruebas:** observar temporalmente carga, completar efecto y desmontaje; revisar consola, lint y typecheck.
 
-### - [ ] HOME-012 — Conectar búsqueda y filtro combinados
+### - [x] HOME-012 — Conectar búsqueda y filtro combinados
 - **Trabajo:** guardar `searchValue` y `activeCategoryId` con `useState`; derivar resultados por coincidencia en título o ubicación y categoría activa, ignorando mayúsculas/minúsculas y espacios exteriores; renderizar estado vacío.
 - **Archivos previstos:** `app/page.tsx`; ajuste a props en `SearchBar`, `CategoryFilters`, `AccommodationGrid` solo si la integración lo requiere.
 - **Dependencias:** HOME-008, HOME-009, HOME-011.
 - **Aceptación:** búsqueda y categoría actúan simultáneamente sobre datos sin mutar fuente; se actualiza al instante; no coincidencias muestran texto; al limpiar se restaura lista filtrada apropiada.
 - **Pruebas:** buscar por nombre/ubicación, variantes de mayúsculas/espacios, categoría, combinación AND, cero resultados y reset.
 
-### - [ ] HOME-013 — Verificar navegación con Link
+### - [x] HOME-013 — Verificar navegación con Link
 - **Trabajo:** revisar que cada tarjeta usa `Link` y un id estable hacia `/rooms/{id}`.
 - **Archivos previstos:** `components/listings/AccommodationCard.tsx`, potencialmente `app/page.tsx` únicamente para corregir integración.
 - **Dependencias:** HOME-006, HOME-011.
@@ -114,7 +114,7 @@
 - **Aceptación:** 375 px muestra grid de una columna y controles utilizables; a 768 px o más grid de varias columnas; sin overflow horizontal general. La captura descrita es solo móvil: no se presenta un layout desktop como verificado por ella. Se conservan todos los elementos P0 de cabecera.
 - **Pruebas:** navegador/devtools disponibles a 375 y 768+ px; confirmar columnas, ausencia de overflow horizontal general y foco/teclado. No instalar herramientas.
 
-### - [ ] HOME-015 — Ejecutar lint, TypeScript y compilación
+### - [x] HOME-015 — Ejecutar lint, TypeScript y compilación
 - **Trabajo:** ejecutar validaciones definidas en el proyecto sin modificar configuración ni añadir scripts/dependencias.
 - **Archivos previstos:** ninguno, salvo cambios de corrección aprobados y necesarios.
 - **Dependencias:** HOME-002 a HOME-014.
@@ -127,6 +127,19 @@
 - **Dependencias:** HOME-011 a HOME-015.
 - **Aceptación:** todos los criterios obligatorios de Home comprobados; no se inició Catálogo/Detalle ni funcionalidades opcionales; evidencia de pruebas resumida.
 - **Pruebas:** recorrido manual completo de carga, búsqueda, filtros, vacío, render de tarjetas, enlaces y responsive.
+
+## Incidencias de ejecución — imágenes en `next/image`
+
+- **Problema detectado:** al ejecutar Home en el navegador, `next/image` rechazaba `images.unsplash.com` porque el host no está autorizado en `next.config.ts`. Los datos simulados también usaban URLs remotas para el avatar del anfitrión.
+- **Resolución inicial:** se sustituyeron las rutas de imágenes por `/accommodation-placeholder.svg`, un SVG original local; el componente `Image` se conservó y no fue necesario modificar `next.config.ts`.
+- **Mejora posterior:** se guardaron seis fotografías JPEG diferentes en `public/images/accommodations/` y se asignó una a cada alojamiento en los datos. El placeholder local sigue disponible como fallback de `Image` cuando la ruta esté vacía. Solo la primera tarjeta recibe `priority`, para atender el LCP probable; las demás conservan la carga por defecto.
+- **Verificación anterior:** se revisaron los usos de `next/image` en `app/` y `components/`; `AccommodationCard` es el único uso encontrado.
+
+## Mejora visual adicional de Home (2026-11-23)
+
+- `CategoryFilters` pasó a botones compactos tipo píldora, en fila desplazable, con icono y etiqueta en línea, fondos/bordes diferenciados y foco visible. Se conserva la selección controlada y `aria-pressed`.
+- `AccommodationCard` conserva su estructura y Link; mantiene imagen grande `object-cover` con esquinas redondeadas, corazón y badge decorativos, título/valoración, ubicación y precio.
+- **Validación de esta actualización:** las seis fotos locales son JPEG válidos; las siete referencias de imagen de los datos (seis alojamientos y avatar) existen y no hay URLs externas. `npx tsc --noEmit`, `npm run lint`, `npm run build` y `git diff --check` finalizaron correctamente. No se encontró navegador Chromium/Chrome disponible en el entorno, por lo que no se ejecutó validación visual/interactiva a 375, 768 px o escritorio. HOME-014 y HOME-016 siguen pendientes de esa comprobación manual y del recorrido funcional completo.
 
 ## Mejoras visuales y extensiones fuera de tareas obligatorias
 
