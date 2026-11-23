@@ -1,4 +1,4 @@
-# HOME-001 — Especificación funcional y visual
+# Especificación funcional y visual de Home
 
 - **Vista:** Home (`/`)
 - **Estado:** especificación documental; no implementado.
@@ -8,20 +8,20 @@
 ## Prioridad de requisitos
 
 - **P0 — obligatorio 4Geeks:** navegación con logo y menú de usuario, búsqueda y categorías con estado, carga simulada, estado de carga, grid responsive, tarjetas con contenido requerido, enlaces `Link`, TypeScript, Tailwind, componentes pequeños.
-- **P1 — mejora visual compatible:** presentación inspirada en la referencia, ubicación en tarjetas, icono visual de favorito, distintivos opcionales, iconos de categorías y agrupación por secciones siempre en una cuadrícula base.
+- **P1 — mejora visual compatible aprobada:** fotografías grandes con esquinas redondeadas, ubicación visible, iconos originales para categorías, corazón decorativo sin funcionalidad de favoritos y distintivo de recomendación opcional. No añadir interacciones nuevas.
 - **P2 — extensión fuera del MVP:** carruseles horizontales, experiencias, barra inferior móvil, sección de inspiración y footer ampliado. No implementar sin aprobación expresa.
 
 ## 1. Objetivo y alcance
 
 Ofrecer el punto de entrada para explorar alojamientos. En esta fase Home presenta cabecera, búsqueda en tiempo real por nombre o ubicación, filtros por categoría, estados de carga y vacío y una cuadrícula de tarjetas. La vista usa datos simulados compartibles posteriormente con Catálogo y Detalle. La cuadrícula es la base obligatoria aunque la referencia muestra carruseles en móvil.
 
-Quedan fuera de alcance la implementación de esas vistas, backend, reserva transaccional y cualquier funcionalidad no requerida. La identidad será un componente/logo propio, inspirado visualmente en patrones generales de la referencia, con recursos propios/locales; no copiará el logo oficial, la marca ni recursos propietarios de Airbnb.
+Quedan fuera de alcance la implementación de esas vistas, backend, reserva transaccional y cualquier funcionalidad no requerida. La identidad será un componente `Logo` propio, inspirado visualmente en patrones generales de la referencia, con SVG original o recurso local; no copiará el logo oficial ni activos propietarios de Airbnb.
 
 ## 2. Requisitos funcionales obligatorios
 
 1. Mostrar `Header`/`Navbar` con logo o identidad original, búsqueda e iconos o controles del menú de usuario. En móvil, distribuir o compactar estos elementos para que entren en el espacio disponible sin eliminar logo ni menú requeridos. La referencia no permite afirmar cómo resolverlos, dado que su descripción indica que el logotipo completo no es visible.
-2. Mostrar `CategoryFilters` en una fila horizontal desplazable con Todo, Alojamientos y Hoteles como categorías iniciales, según el análisis visual externo. La categoría activa debe reflejarse visualmente. No hay otras categorías obligatorias en el alcance inicial.
-3. Mostrar alojamientos mediante tarjetas con imagen placeholder, título, ubicación, precio por noche y valoración en estrellas.
+2. Mostrar `CategoryFilters` en una fila horizontal desplazable con Todo, Alojamientos y Hoteles como categorías iniciales. `Todo` representa `null` (sin filtro), es el estado inicial y permite retirar cualquier filtro. Alojamientos y Hoteles son filtros distintos; los datos simulados deben incluir registros que permitan comprobar resultados diferenciados de ambos. La categoría activa debe reflejarse visualmente.
+3. Mostrar alojamientos mediante tarjetas con imagen placeholder, título, ubicación, precio por noche y valoración en estrellas. Como P1 aprobado, usar fotografías grandes redondeadas, corazón decorativo sin acción de favorito y distintivo de recomendación opcional. Los iconos de categorías serán originales/locales. No añadir interacciones nuevas.
 4. Mostrar una columna de tarjetas en 375 px y varias columnas en escritorio a partir del breakpoint objetivo de 768 px.
 5. Empezar con lista vacía (`[]`) y `loading=true`. Un `useEffect` inicia una simulación con `setTimeout` de aproximadamente 1 segundo; al resolver, carga los datos y pone `loading=false`. Limpiar el temporizador al desmontar.
 6. Mostrar un indicador visible mientras carga.
@@ -42,18 +42,18 @@ Tipos completos en la sección 4. Los componentes son funciones declaradas como 
 | `SearchBar` | Campo de búsqueda controlado. | `value: string`, `onChange: (value: string) => void`, `placeholder?: string`. | `onChange` en cada entrada; estado controlado por padre. | Reutilizable si otras vistas requieren búsqueda. |
 | `CategoryFilters` | Fila de filtros redondeados con iconos y etiquetas. Los elementos observados son Todo, Alojamientos y Hoteles. Distinguir el activo. | `categories: Category[]`, `activeCategoryId: string \| null`, `onCategoryChange: (id: string \| null) => void`. | Selección notificada al padre. | Home. |
 | `CategoryFilter` | Elemento individual de filtro, con icono/etiqueta y apariencia activa/inactiva. | `category: Category`, `active: boolean`, `onSelect: (id: string \| null) => void`. | Click/teclado invoca selección; sin estado propio. | Dentro de `CategoryFilters`; reutilización opcional. |
-| `AccommodationCard` | Tarjeta base con imagen placeholder/recurso local, título, ubicación, precio/noche, valoración con estrella y `Link`. P1 opcionales: favorito visual, distintivo, fechas o precio total si no desplazan requisitos. | `accommodation: Accommodation`; opcionales como `showFavorite?: boolean`, `badge?: string`. | Sin estado obligatorio; favorito solo decorativo salvo aprobación de interacción funcional. Enlace a `/rooms/${accommodation.id}`. | Reutilizable en Home y Catálogo. |
+| `AccommodationCard` | Tarjeta base con fotografía placeholder/recurso local grande y redondeada, título, ubicación, precio/noche, valoración con estrella y `Link`. Puede mostrar corazón decorativo y distintivo de recomendación opcional. | `accommodation: Accommodation`; distintivo opcional solo si el modelo lo contempla. | Sin estado; corazón no interactivo. Enlace a `/rooms/${accommodation.id}`. | Reutilizable en Home y Catálogo. |
 | `AccommodationGrid` | Presentar tarjetas responsive y estado vacío. | `accommodations: Accommodation[]`, `emptyMessage?: string`. | Sin estado; renderiza tarjetas/estado vacío. | Reutilizable en Home y Catálogo. |
 | `LoadingIndicator` | Mostrar estado de carga visible y semántico. | `label?: string`. | Sin estado. | Reutilizable en las tres vistas. |
 | `ExperienceSection` (P2) | Sección propuesta de experiencias cercanas, con encabezado y tarjetas. | Contrato por definir si se aprueba. | No incluir en MVP/tareas P0. | Extensión visual. |
-| `AccommodationSection` (P1) | Encabezado de sección con título y agrupación de alojamientos; conserva `AccommodationGrid`, no convierte resultados en carrusel. | `title: string`, `accommodations: Accommodation[]`. Posibles props adicionales tras confirmar. | Sin estado requerido. | Home; compatible con futuras agrupaciones. |
+| `AccommodationSection` (opcional) | Encabezado de sección con título y agrupación de alojamientos; conserva `AccommodationGrid`, no convierte resultados en carrusel. | `title: string`, `accommodations: Accommodation[]`. | Sin estado requerido. | Fuera de las tareas Home aprobadas; considerar en otra fase si se solicita. |
 | `MobileBottomNav` (P2) | Navegación inferior inspirada en la referencia, sin rutas ni acciones no aprobadas. | Props y acciones por definir. | No implementar en MVP. | Extensión visual móvil. |
 
 ### Componentes secundarios observados, no obligatorios
 
 `ExperienceSection` se describe visualmente como título alineado a la izquierda, botón circular con flecha y carrusel horizontal de tarjetas de experiencias con imagen redondeada, texto breve y parte de la tarjeta siguiente visible. Ejemplos de rótulos: Rutas culturales, Lugares emblemáticos y Rutas culinarias. Esto es P2: no incluir en la primera implementación.
 
-Las secciones de alojamientos observadas agrupan tarjetas bajo títulos como “Quédate en Tenerife”, “Quédate en Alicante”, “Alojamientos en Sevilla” y “Disponibles en Granada este fin de semana”; muestran encabezado y flecha circular. Estas observaciones permiten proponer `AccommodationSection` (P1), pero las tarjetas deben disponerse como `AccommodationGrid` obligatoria. No afirmar que las etiquetas/fechas/valores de la captura sean datos requeridos.
+Las secciones de alojamientos observadas agrupan tarjetas bajo títulos como “Quédate en Tenerife”, “Quédate en Alicante”, “Alojamientos en Sevilla” y “Disponibles en Granada este fin de semana”; muestran encabezado y flecha circular. Esta agrupación no está incluida en las decisiones P1 aprobadas ni en las tareas de Home. No afirmar que las etiquetas/fechas/valores de la captura sean datos requeridos.
 
 ### Relaciones
 
@@ -113,7 +113,7 @@ Home consume `Accommodation` y `Category`; el modelo común se conserva para que
 
 ## 6. Navegación
 
-La navegación entre rutas internas se realiza con `Link` de Next.js. Cada tarjeta enlaza a `/rooms/{id}` con el `id` correspondiente al registro común. La ruta de destino es una dependencia futura; no se debe crear en la fase Home. `Logo` puede ofrecer un enlace interno a `/` si se define como enlace.
+La navegación interna usa `Link` de Next.js. Cada tarjeta enlaza a `/rooms/{id}` con el `id` del registro común. Mientras Detalle no exista, ese enlace puede terminar en una página not-found; esto es temporal y no constituye navegación completa del ejercicio. Futuramente se integrarán enlaces entre Home (`/`), Catálogo (`/catalog`) y Detalle (`/rooms/[id]`) conforme a sus SDD; esta fase no crea esas rutas. `Logo` puede enlazar a `/`.
 
 ## 7. Diseño responsive y restricciones
 
@@ -161,11 +161,25 @@ La referencia representa la Home de Airbnb España en móvil, de aproximadamente
 - **Navegación:** cada tarjeta renderiza un `Link` interno con href `/rooms/{id}` coherente con el alojamiento.
 - **Calidad:** TypeScript, ESLint y build de Next.js sin errores; no se añaden dependencias ni estilos inline.
 
-### Criterios P1 visuales compatibles
+### Criterios P1 visuales aprobados
 
-- Si se aprueban en implementación, el tratamiento de tarjetas puede incluir fotografía grande redondeada, ubicación, icono de favorito únicamente visual y distintivo opcional; ninguno elimina precio/noche, estrella, título ni enlace.
-- Puede haber secciones agrupadas por ubicación/disponibilidad siempre que cada una renderice una `AccommodationGrid` responsive base y no carrusel como sustituto.
-- Los filtros pueden incorporar iconos propios/locales y forma redondeada; la categoría activa debe distinguirse sin valores de color exactos predefinidos.
+- Las tarjetas presentan fotografía grande con esquinas redondeadas y ubicación visible; pueden mostrar un corazón decorativo no interactivo y un distintivo de recomendación opcional.
+- Los filtros usan iconos originales/locales y forma redondeada; la categoría activa se distingue sin fijar valores exactos de color.
+- Ningún elemento P1 añade interacciones: el corazón no gestiona favoritos ni el distintivo activa una recomendación funcional.
+
+### Casos de prueba verificables
+
+Ejecutar con el navegador/devtools y los scripts ya disponibles en el proyecto; no añadir dependencias ni herramientas. Registrar los resultados al cierre de HOME-016.
+
+| Caso | Procedimiento | Resultado esperado |
+| --- | --- | --- |
+| Búsqueda por título | Tras carga, escribir un fragmento de un título de dato simulado. | Se muestran coincidencias por título; no se requiere submit. |
+| Búsqueda por ubicación | Escribir un fragmento de ubicación que no aparezca en el título correspondiente. | El registro coincide por ubicación; mayúsculas y espacios exteriores no cambian el resultado. |
+| Categorías | Seleccionar Alojamientos, Hoteles y luego Todo. | El estado activo cambia; resultados diferenciados según datos; Todo (`null`) restaura el conjunto sin filtro. |
+| Combinación | Aplicar búsqueda y categoría compatibles simultáneamente. | Solo aparecen registros que satisfacen ambos criterios. |
+| Sin resultados | Usar texto o combinación que no coincida. | Mensaje explícito de vacío visible; no queda un grid silenciosamente vacío. |
+| Enlaces | Inspeccionar cada tarjeta y activar su enlace. | `href` es `/rooms/{id}` con id del registro; destino puede ser not-found temporal hasta implementar Detalle. |
+| Responsive | Inspeccionar Home a 375 px y 768 px o más. | Una columna en móvil, varias desde 768 px, sin overflow horizontal general; cabecera retiene Logo, búsqueda y menú. |
 
 ### P2 fuera de la aceptación MVP
 

@@ -1,4 +1,4 @@
-# HOME-001 — Plan técnico de implementación
+# Plan técnico de implementación de Home
 
 - **Fase:** Home (`/`) únicamente.
 - **Estado:** plan; no ejecutar hasta aprobación/instrucción.
@@ -29,7 +29,7 @@ Componentes pequeños, funcionales declarados como `const`. El contenedor coordi
 
 **P0:** `AccommodationGrid` es el layout base en móvil y escritorio. **No sustituir por carruseles** aunque sean visibles en la referencia. La cabecera debe incluir los elementos obligatorios (componente/logo propio, búsqueda y menú de usuario) en una composición compacta para móvil; el análisis describe que el logo completo no se ve en la captura, pero el requisito P0 prevalece. La identidad propia se inspira visualmente en patrones generales de la referencia, sin copiar el logo oficial.
 
-**P1, solo tras validar alcance visual:** `AccommodationSection` puede agrupar grids bajo encabezados por ubicación/disponibilidad. `AccommodationCard` puede admitir ubicación adicional, favorito meramente visual o distintivo opcional. Iconos propios/locales para filtros. Estos extras no deben añadir estado/funciones innecesarias ni reemplazar campos P0.
+**P1 aprobado, solo presentación:** tarjetas con fotografía grande redondeada y ubicación visible; corazón decorativo sin favoritos funcionales; distintivo de recomendación opcional; iconos originales/locales para categorías. No añadir interacciones nuevas ni estado para estos elementos. No es necesario crear `AccommodationSection` como parte de este alcance.
 
 **P2, no implementar como parte del MVP ni incluir en tareas obligatorias:** carrusel de experiencias, carruseles de alojamientos, `MobileBottomNav`, sección de inspiración y footer completo. Requieren aprobación expresa posterior.
 
@@ -48,7 +48,6 @@ components/listings/CategoryFilters.tsx
 components/listings/AccommodationCard.tsx
 components/listings/AccommodationGrid.tsx
 components/shared/LoadingIndicator.tsx
-components/listings/AccommodationSection.tsx # P1 opcional, solo con aprobación
 components/ProductCard.tsx            # solo si inspección concluye que conviene mantener/ adaptar
 components/ui/UserMenuControls.tsx     # opcional únicamente si separar controles reduce complejidad
  types/accommodation.ts
@@ -81,9 +80,9 @@ Los datos usados por Home deben satisfacer el tipo compartido. Mantener IDs esta
 
 ## 6. Búsqueda y categorías
 
-- Controlar `searchValue` (`string`) y `activeCategoryId` (`string | null`) con `useState`. Las categorías iniciales son Todo, Alojamientos y Hoteles; Todo se representa como `null` (sin filtro) y es el estado activo inicial.
+- Controlar `searchValue` (`string`) y `activeCategoryId` (`string | null`) con `useState`. Las categorías iniciales son Todo, Alojamientos y Hoteles; Todo se representa como `null` (sin filtro) y es el estado activo inicial. Los datos deben tener alojamientos que evidencien resultados diferentes para Alojamientos y Hoteles; Todo no es una categoría asignada a los registros.
 - `SearchBar` recibe `value` y `onChange`; no mantiene estado duplicado.
-- `CategoryFilters` recibe categorías, ID activo y handler; usar inicialmente Todo, Alojamientos y Hoteles, conforme a la decisión adoptada desde el análisis visual suministrado. Todo corresponde a `null` (sin filtro) y debe ser la selección inicial; Alojamientos y Hoteles filtran registros de forma demostrable. No atribuir categorías adicionales a la captura. Debe existir un medio accesible de volver a Todo.
+- `CategoryFilters` recibe categorías, ID activo y handler; usar inicialmente Todo, Alojamientos y Hoteles. Todo corresponde a `null` (sin filtro) y debe ser la selección inicial; Alojamientos y Hoteles filtran registros de forma demostrable. Debe existir un medio accesible de volver a Todo.
 - Derivar la colección visible aplicando simultáneamente `searchValue.trim()` normalizado y pertenencia a la categoría activa. El texto coincide si aparece en `title` **o** `location`. `null` omite filtro de categoría.
 - Comparación textual insensible a mayúsculas/minúsculas; no mutar array de origen. Al aplicar categorías se respetan los datos tipados.
 - Asegurar estado vacío para cero coincidencias; distinguirlo de la carga.
@@ -94,7 +93,7 @@ Los datos usados por Home deben satisfacer el tipo compartido. Mantener IDs esta
 - Grid P0: una columna en 375 px y varias en escritorio. El análisis de la captura reporta carruseles en móvil, pero se conserva el grid por precedencia de requisito; carruseles solo P2 con autorización.
 - Categorías: fila de filtros redondeados con iconos/etiquetas; desplazamiento horizontal permitido en móvil. Estado activo claramente distinto. Usar iconografía propia/local.
 - Header móvil: contener logo/identidad propia, search pill con lupa y texto/placeholder funcional “Empieza a buscar” y controles de usuario. El logo debe ser propio e inspirado visualmente en la referencia, no una copia oficial. El análisis dice que no aparece logo completo; determinar composición compacta en la implementación sin ocultar requisitos. No asumir que el texto de la captura es interactivo o placeholder definitivo sin aprobación.
-- Rasgos observados para orientar estilos: blanco predominante, texto oscuro, grises secundarios, acentos rosa/rojo, sans-serif, imágenes grandes redondeadas, espaciado compacto y secciones claramente separadas. No extrapolar valores exactos ni medidas.
+- Rasgos orientativos y P1 aprobados: fotografías grandes redondeadas, ubicación visible, iconos originales de categorías, corazón decorativo sin acción y distintivo de recomendación opcional. Se permiten además blanco predominante, texto oscuro, grises secundarios, acentos rosa/rojo, sans-serif y separación clara. No extrapolar valores exactos ni medidas ni añadir interacciones.
 - A 768 px o más ajustar cabecera/grilla a escritorio; solo hay evidencia visual móvil y el comportamiento exacto de escritorio queda pendiente de captura.
 - Tailwind exclusivamente para estilos de componentes; sin estilos inline, paquetes UI ni logo/recursos oficiales copiados. Elementos visuales originales/locales.
 - Experiencias, bottom nav y footer extendido son P2 y no son parte de esta estrategia MVP.
@@ -103,7 +102,7 @@ Los datos usados por Home deben satisfacer el tipo compartido. Mantener IDs esta
 
 1. **Inspección y decisiones de base:** leer archivos existentes y scripts; acordar qué hacer con `ProductCard`, cómo representar valoración/estrellas e iconos con recursos propios y nivel de datos placeholder. La taxonomía inicial queda fijada en Todo/Alojamientos/Hoteles. Separar lo descrito por análisis visual externo de lo requerido P0. No tocar configuración.
 2. **Modelo y datos:** definir tipos Accommodation/Category y datos coherentes con IDs/categorías válidos. Validación de tipos.
-3. **Presentación reutilizable:** implementar Logo propio, LoadingIndicator, AccommodationCard (mínimos P0, extras P1 solo si aprobados) y AccommodationGrid; verificar rendering estático, grid y navegación `Link`.
+3. **Presentación reutilizable:** implementar Logo propio, LoadingIndicator, AccommodationCard (mínimos P0 y mejoras P1 visuales aprobadas) y AccommodationGrid; verificar rendering estático, grid y navegación `Link`.
 4. **Controles de Home:** implementar SearchBar y CategoryFilters como componentes controlados; validar categoría activa, iconos si se aprueban y eventos con teclado.
 5. **Orquestación Home:** incorporar Header/Navbar y conectar filtros, datos, estados, carga simulada, resultados, estado vacío; mantener cabecera compacta sin omitir logo/menú en `/`.
 6. **Responsive y accesibilidad:** ajustar Tailwind con validación 375/768+ px; priorizar grid de una columna móvil; foco/teclado, etiquetas y textos alternativos. Mantener desktop exacto pendiente de captura.
@@ -114,7 +113,8 @@ Cada fase se revisa antes de comenzar la siguiente; no iniciar ejecución hasta 
 ## 9. Dependencias y vistas futuras
 
 - `Accommodation`, `Category` y los datos locales deben mantener contratos estables para Catálogo y `/rooms/[id]`.
-- `AccommodationCard` debe enlazar a un id estable; el destino aún no está creado y no debe añadirse en fase Home.
+- `AccommodationCard` debe enlazar a un id estable. Hasta que Detalle exista, el href puede terminar temporalmente en not-found; no es navegación completa del ejercicio.
+- En fases posteriores se conectarán Home, Catálogo (`/catalog`) y Detalle (`/rooms/[id]`) con navegación interna de `Link`, guiada por los SDD respectivos. No crear esas rutas en Home.
 - `Navbar`, `Logo`, `LoadingIndicator`, `AccommodationCard` y `AccommodationGrid` son candidatos a reutilizar. Confirmar en specs de futuras vistas si composición/props satisfacen sus necesidades.
 - Catálogo, sorting, mapa, detalle, galería y reserva quedan fuera de esta fase.
 
@@ -142,6 +142,6 @@ Cada fase se revisa antes de comenzar la siguiente; no iniciar ejecución hasta 
 - Probar navegación por teclado, foco visible, nombres accesibles en controles, alt apropiado para placeholders y estado de carga detectable por tecnologías asistivas.
 - Usar como orientación visual de Home las observaciones externas ya documentadas en `context.md` y `spec.md`; no presentarlas como inspección directa ni como mediciones verificadas. No bloquear la implementación funcional por falta de referencia de escritorio.
 
-## 11. Decisiones que requieren confirmación
+## 11. Decisiones pendientes de implementación
 
-Antes o durante implementación confirmar, sin alterar alcance: (1) si `ProductCard.tsx` se adapta o se sustituye/reubica; (2) número y contenido de datos simulados; (3) mecanismo propio/local para estrellas, lupa, iconos de categoría y menú usuario; (4) texto/forma final del campo de búsqueda y disposición compacta de cabecera; (5) si se autorizan mejoras P1 como favorito visual, distintivos o agrupaciones; (6) P2 requiere aprobación expresa y está fuera del MVP; (7) comandos de lint/build/typecheck. La taxonomía inicial se decide como Todo/Alojamientos/Hoteles; cualquier extensión posterior se valida aparte. Los colores son solo familias observadas, no valores; el análisis visual es externo y no valida interacciones. El responsive de escritorio necesita referencia adicional. Mantener sin definir cualquier dimensión/estilo exacto no suministrado.
+Antes o durante implementación decidir, sin alterar alcance: (1) si `ProductCard.tsx` se adapta o se sustituye/reubica; (2) número y contenido de datos simulados; (3) mecanismo propio/local para estrellas, lupa, iconos de categoría y menú usuario; (4) texto/forma final del campo de búsqueda y disposición compacta de cabecera; (5) scripts de lint/build/typecheck disponibles. Las mejoras P1 visuales aprobadas no requieren nueva aprobación; evitar convertirlas en interacciones. P2 sigue fuera del MVP y requiere aprobación expresa. La taxonomía inicial es Todo/Alojamientos/Hoteles. Los colores son familias observadas, no valores; el análisis visual es externo y no valida interacciones. Mantener sin definir dimensiones/estilos exactos no suministrados.

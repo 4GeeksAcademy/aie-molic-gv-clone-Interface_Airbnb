@@ -1,4 +1,4 @@
-# HOME-001 — Tareas de implementación
+# Tareas de implementación de Home
 
 > **Estado:** planificación solamente. Las casillas permanecen sin marcar. No ejecutar hasta que el usuario indique iniciar la primera tarea.
 >
@@ -10,7 +10,7 @@
 - **Trabajo:** revisar la implementación actual de Home, `ProductCard`, layout/estilos globales y scripts disponibles; proponer adaptación o reutilización sin tocar archivos todavía.
 - **Archivos previstos:** solo lectura: `app/page.tsx`, `app/layout.tsx`, `app/globals.css`, `components/ProductCard.tsx`, `package.json`, `context.md`, esta spec y `plan.md`.
 - **Dependencias:** ninguna.
-- **Aceptación:** se conoce contenido y función actuales; queda documentada una decisión explícita sobre `ProductCard` y comandos existentes antes de cambios.
+- **Aceptación:** se conoce contenido y función actuales; se decide cómo evitar duplicar `ProductCard` y se identifican los comandos existentes.
 - **Pruebas:** inspección de estructura; no requiere ejecutar build todavía.
 
 ## Fase B — Modelo y datos simulados (P0)
@@ -26,8 +26,8 @@
 - **Trabajo:** preparar alojamientos y categorías simuladas tipadas, con ids únicos y categoryIds que correspondan a categorías existentes. Usar Todo, Alojamientos y Hoteles como categorías iniciales; Todo representa ausencia de filtro y las otras dos deben permitir demostrar filtrado. Usar contenido e imágenes placeholder propios y mantener campos compatibles con rutas futuras.
 - **Archivos previstos:** `data/accommodations.ts`, `data/categories.ts`.
 - **Dependencias:** HOME-002.
-- **Aceptación:** arrays satisfacen los tipos, IDs no duplicados y relaciones de categorías válidas; Todo no requiere categoryId de alojamiento, y los datos ficticios/placeholders permiten probar filtros distintos para Alojamientos y Hoteles.
-- **Pruebas:** typecheck; inspección de ids y relaciones; no hay dependencias externas.
+- **Aceptación:** arrays satisfacen los tipos, IDs no duplicados y relaciones válidas; Todo no se asigna a alojamientos. Hay registros de Alojamientos y Hoteles que permiten observar resultados diferenciados.
+- **Pruebas:** typecheck si está disponible; verificar ids/relaciones y que cada filtro produce un conjunto visible identificable. Sin dependencias externas.
 
 ## Fase C — Presentación reutilizable (P0)
 
@@ -46,11 +46,11 @@
 - **Pruebas:** verificar render, href interno y lint.
 
 ### - [ ] HOME-006 — Implementar tarjeta de alojamiento reutilizable
-- **Trabajo:** adaptar o crear tarjeta P0 que muestre imagen placeholder/recurso local, título, ubicación, precio/noche y valoración con estrella, con navegación interna al id. Extras P1 (favorito decorativo o distintivo) solo si son aprobados y no desplazan los mínimos.
+- **Trabajo:** adaptar o crear tarjeta con fotografía placeholder/local grande y redondeada, título, ubicación, precio/noche y valoración con estrella, con navegación al id. Incluir corazón decorativo no interactivo; distintivo de recomendación opcional. No añadir funcionalidades.
 - **Archivos previstos:** `components/listings/AccommodationCard.tsx`; `components/ProductCard.tsx` únicamente si HOME-001 aprobó adaptación/migración.
 - **Dependencias:** HOME-002, HOME-003, HOME-005 si se requiere identidad auxiliar.
-- **Aceptación:** no duplica una tarjeta existente; datos tipados y `Link` a `/rooms/{id}`; alt útil y placeholder no propietario.
-- **Pruebas:** inspección de cada campo y href; lint, typecheck.
+- **Aceptación:** no duplica una tarjeta existente; datos tipados y `Link` a `/rooms/{id}`; alt útil; corazón sin acción ni estado y distintivo solo visual.
+- **Pruebas:** comprobar en DOM los campos y href; lint/typecheck disponibles.
 
 ### - [ ] HOME-007 — Implementar cuadrícula y estado vacío
 - **Trabajo:** crear cuadrícula responsive que compone `AccommodationCard` y un mensaje explícito de resultados vacíos.
@@ -79,7 +79,7 @@
 - **Trabajo:** componer Logo, SearchBar y controles/iconos del menú de usuario. Los controles sin funcionalidad especificada no aparentan una acción funcional no implementada.
 - **Archivos previstos:** `components/layout/Navbar.tsx`; componente pequeño de controles solo si aprobado en plan.
 - **Dependencias:** HOME-005, HOME-008.
-- **Aceptación:** composición coherente, props de búsqueda controlada, controles con accesibilidad; sin copiar logo/activos ni estilos inline.
+- **Aceptación:** composición coherente, props de búsqueda controlada, controles accesibles; `Logo` original inspirado en términos generales, sin copiar logo oficial o activos; sin estilos inline.
 - **Pruebas:** búsqueda se propaga desde Navbar; teclado, lint y typecheck.
 
 ## Fase E — Integración funcional Home (P0)
@@ -87,7 +87,7 @@
 ### - [ ] HOME-011 — Conectar estado, carga simulada y efectos
 - **Trabajo:** actualizar `app/page.tsx` para mantener lista inicialmente vacía, `loading=true`, crear `useEffect` con timeout ~1 s, cargar datos simulados, apagar loading y limpiar timeout al desmontar.
 - **Archivos previstos:** `app/page.tsx`.
-- **Dependencias:** HOME-003, HOME-004, HOME-007, HOME-009, HOME-010.
+- **Dependencias:** HOME-003, HOME-004, HOME-007, HOME-010.
 - **Aceptación:** indicador inicial visible; datos aparecen tras simulación; cleanup ejecutado; carga y estado de resultados no se confunden.
 - **Pruebas:** observar temporalmente carga, completar efecto y desmontaje; revisar consola, lint y typecheck.
 
@@ -102,17 +102,17 @@
 - **Trabajo:** revisar que cada tarjeta usa `Link` y un id estable hacia `/rooms/{id}`.
 - **Archivos previstos:** `components/listings/AccommodationCard.tsx`, potencialmente `app/page.tsx` únicamente para corregir integración.
 - **Dependencias:** HOME-006, HOME-011.
-- **Aceptación:** href de cada tarjeta coincide con su alojamiento; no se usan enlaces externos o navegación manual para ruta interna. No crear página de detalle.
-- **Pruebas:** inspección DOM/href y activar enlace; el destino aún no implementado puede responder 404 en esta fase.
+- **Aceptación:** href coincide con cada alojamiento y usa `Link`; no crear página de detalle. Un not-found temporal es esperado mientras la ruta no exista y no significa que la navegación del ejercicio esté completa.
+- **Pruebas:** verificar href en DOM y activarlo; registrar el not-found temporal como limitación esperada.
 
 ## Fase F — Diseño responsive y calidad (P0)
 
 ### - [ ] HOME-014 — Validar responsive 375px y escritorio
-- **Trabajo:** revisar y ajustar clases Tailwind de Home, navegación, categorías y tarjetas a los objetivos. Mantener `AccommodationGrid` de una columna a 375 px y varias desde 768 px; no sustituir por carruseles por la referencia. Considerar fondo blanco, texto oscuro, grises, acentos rosa/rojo, sans-serif, imágenes grandes redondeadas y separación de secciones como guía cualitativa, sin inventar valores exactos. Cabecera móvil conserva logo propio, búsqueda y menú de usuario de forma compacta.
+- **Trabajo:** revisar Tailwind de Home, navegación, categorías y tarjetas. Aplicar P1 aprobado: fotos grandes redondeadas, ubicación, iconos propios, corazón decorativo no interactivo y distintivo opcional. Mantener grid de una columna a 375 px y varias desde 768 px. Cabecera compacta con `Logo` propio, búsqueda y menú.
 - **Archivos previstos:** componentes Home creados/adaptados; no tocar CSS global sin necesidad aprobada.
 - **Dependencias:** HOME-007, HOME-010, HOME-011, HOME-012.
 - **Aceptación:** 375 px muestra grid de una columna y controles utilizables; a 768 px o más grid de varias columnas; sin overflow horizontal general. La captura descrita es solo móvil: no se presenta un layout desktop como verificado por ella. Se conservan todos los elementos P0 de cabecera.
-- **Pruebas:** inspección en navegador/devtools a 375 y 768+ px; teclado y foco.
+- **Pruebas:** navegador/devtools disponibles a 375 y 768+ px; confirmar columnas, ausencia de overflow horizontal general y foco/teclado. No instalar herramientas.
 
 ### - [ ] HOME-015 — Ejecutar lint, TypeScript y compilación
 - **Trabajo:** ejecutar validaciones definidas en el proyecto sin modificar configuración ni añadir scripts/dependencias.
@@ -130,9 +130,8 @@
 
 ## Mejoras visuales y extensiones fuera de tareas obligatorias
 
-Estas propuestas no forman parte del MVP ni se deben ejecutar como tareas implícitas. Requieren aprobación expresa y una tarea nueva con identificador si se incorporan:
+Las mejoras P1 visuales ya están aprobadas y forman parte de HOME-006, HOME-009 y HOME-014, sin interacciones nuevas. No crear tareas separadas para ellas. Las extensiones P2 siguen fuera del MVP y requieren aprobación expresa y una tarea nueva con identificador:
 
-- **P1 compatible:** icono de favorito solo visual; distintivo opcional como “Recomendación del viajero”; agrupación en secciones con encabezado y `AccommodationGrid`; iconos propios en categorías; datos opcionales de fechas/ubicación/precio total sin sustituir precio por noche y valoración exigidos. Validar con usuario si se implementa cualquiera.
 - **P2 no obligatorio:** carrusel de experiencias (“Descubre experiencias cerca de ti”), carruseles de alojamientos (no sustituyen el grid obligatorio), `MobileBottomNav` (Explorar/Favoritos/Iniciar sesión sin crear rutas ni funcionalidad nueva), sección de inspiración/destinos y footer completo. No agregar tareas P2 hasta aprobación.
 
 El análisis visual procede de observaciones externas de una captura estática; Copilot no inspeccionó directamente la imagen y esas observaciones no certifican comportamiento, breakpoint de escritorio, funcionalidad de favoritos/flechas ni disponibilidad real de alojamientos. Las casillas de todas las tareas permanecen sin completar.
