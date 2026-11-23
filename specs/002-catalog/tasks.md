@@ -2,7 +2,7 @@
 
 > **Estado:** ejecución autorizada. Marcar cada casilla únicamente después de verificar sus criterios de aceptación.
 >
-> Archivos indicados como previstos. Inspeccionar el estado del repositorio y contratos antes de editar. No alterar funcionalidades Home/contexto, instalar dependencias, cambiar configuración ni crear commits/pushes. Solo se permite el cambio mínimo a la navegación existente para enlazar Catálogo.
+> Archivos indicados como previstos. Inspeccionar el estado del repositorio y contratos antes de editar. No alterar funcionalidades Home/contexto, instalar dependencias, cambiar configuración ni crear commits/pushes. Se permiten la navegación mínima a Catálogo y la presentación en euros solicitada para ambas vistas; conservar las columnas y comportamiento de Home.
 
 ## Fase A — Preparación y contrato
 
@@ -74,11 +74,11 @@
 - **Validación:** casos con resultados y lista vacía; revisar hrefs y DOM; lint/typecheck.
 
 ### - [ ] CAT-009 — Componer mapa y layout responsive
-- **Trabajo:** colocar placeholder después de resultados en móvil y a la derecha del listado desde 768 px, con tamaños fluidos sin overflow general.
-- **Archivos previstos:** `app/catalog/page.tsx`, ajustes de `MapPlaceholder.tsx` si son necesarios.
+- **Trabajo:** colocar placeholder después de resultados en móvil y a la derecha desde 768 px; desde 1024 px componer dos zonas 55/45 y mapa alto sticky.
+- **Archivos previstos:** `app/catalog/page.tsx`, `components/listings/AccommodationGrid.tsx`, `components/listings/AccommodationCard.tsx`, `components/listings/MapPlaceholder.tsx`.
 - **Dependencias:** CAT-005, CAT-008.
-- **Aceptación:** orden vertical resultados→mapa a 375 px; columnas resultados-izquierda/mapa-derecha a 768 px o más; etiqueta exacta “Mapa”; el placeholder permanece visible durante carga y no intercepta interacción ni simula datos; estilo coherente con decisiones Stayfinder.
-- **Validación:** navegador/devtools a 375 y 768+ px; inspección de overflow y legibilidad. No declarar Vision-to-Spec completado sin captura.
+- **Aceptación:** orden vertical resultados→mapa a 375 px sin sticky; dos zonas desde 768 px; entre 768 y 1023 px tarjetas en una columna y mapa moderado no sticky; desde 1024 px zonas aproximadamente 55% resultados/45% mapa, hasta dos tarjetas por fila y mapa alineado arriba con altura `calc(100vh - 130px)` más sticky `top-24`. Etiqueta exacta “Mapa”, centrada sobre gris claro redondeado, sin interacción; visible durante carga. Sin overflow horizontal y sin `overflow` ancestro que impida sticky. Home conserva columnas y diseño. Precios en euros sin cambiar valores.
+- **Validación:** navegador/devtools a 375, 768, 1023 y 1024+ px; inspección de overflow, cuadrícula, alineación, altura y sticky durante scroll con suficiente contenido. No declarar Vision-to-Spec completado sin captura.
 
 ## Fase D — Validación y cierre
 
@@ -114,4 +114,14 @@ Orden inicial confirmado: ascendente (menor a mayor); el mapa permanece visible 
 - `npm run build`: correcto; Next prerenderiza `/catalog`.
 - `git diff --check`: correcto.
 - Las seis imágenes de alojamientos y el SVG local de respaldo referidos por datos existen bajo `public/`.
-- No hay navegador Chromium/Chrome/Firefox disponible en el entorno. Por tanto CAT-009 (responsive inspeccionado), CAT-010 (recorrido manual de teclado/navegación) y CAT-012 (recorrido final) permanecen sin marcar. El selector es un `<select>` nativo, pero eso no sustituye prueba interactiva manual.
+- No hay navegador Chromium/Chrome/Firefox disponible en el entorno. Por tanto CAT-009 (responsive y sticky inspeccionados), CAT-010 (recorrido manual de teclado/navegación) y CAT-012 (recorrido final) permanecen sin marcar. El selector es un `<select>` nativo, pero eso no sustituye prueba interactiva manual.
+
+### Ajuste visual de Catálogo y moneda
+
+- Implementado `layout="catalog"` en el grid compartido: una columna móvil/tablet y máximo dos desde 1024 px. El valor por defecto mantiene las clases responsive originales de Home.
+- Títulos de Catálogo con hasta dos líneas; se conserva una línea en Home. Fotografía, ubicación, valoración, precio y bordes se mantienen. El encabezado/selector permite salto de línea.
+- Mapa gris claro, texto “Mapa” centrado y bordes redondeados: 18rem en móvil sin sticky; 20rem y no sticky entre 768–1023 px; desde 1024 px altura `calc(100vh - 130px)` y sticky `top-24`, alineado con el inicio de resultados. Revisar ancestros para que overflow no bloquee sticky.
+- Precios EUR en Home y Catálogo mediante `Intl.NumberFormat`, sin tocar los datos.
+- Comprobación puntual de render React con estados simulados, sin archivos de test ni dependencias nuevas: columnas/clases por variante, títulos, euros, ascendente/descendente, conteo, array original congelado sin mutación, carga con mapa y vacío correctos. `Link` e `Image` se sustituyeron por elementos HTML en esta comprobación: no valida el navegador ni el optimizador de imágenes.
+- `npx tsc --noEmit`, lint de archivos afectados, `npm run lint`, `npm run build` y `git diff --check`: correctos para este ajuste.
+- Pendientes en navegador: Home y Catálogo a 375/768/1023/1024/1440 px, legibilidad de títulos y fotografías, altura y sticky del mapa con scroll suficiente, ausencia de overflow, interacción del selector y teclado. CAT-009, CAT-010 y CAT-012 siguen sin marcar; no se ha inspeccionado ninguna captura.

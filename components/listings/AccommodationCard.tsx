@@ -5,9 +5,10 @@ import type { Accommodation } from "@/types/accommodation";
 interface AccommodationCardProps {
   accommodation: Accommodation;
   priority?: boolean;
+  titleLines?: 1 | 2;
 }
 
-export const AccommodationCard = ({ accommodation, priority = false }: AccommodationCardProps) => (
+export const AccommodationCard = ({ accommodation, priority = false, titleLines = 1 }: AccommodationCardProps) => (
   <article className="min-w-0">
     <Link href={`/rooms/${accommodation.id}`} className="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900" aria-label={`${accommodation.title}, ${accommodation.location}`}>
       <div className="relative aspect-[1/0.94] overflow-hidden rounded-2xl bg-stone-100">
@@ -17,11 +18,11 @@ export const AccommodationCard = ({ accommodation, priority = false }: Accommoda
       </div>
       <div className="pt-3">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="line-clamp-1 text-sm font-semibold text-stone-900">{accommodation.title}</h2>
+          <h2 className={`${titleLines === 2 ? "line-clamp-2 min-w-0 break-words" : "line-clamp-1"} text-sm font-semibold text-stone-900`}>{accommodation.title}</h2>
           <span className="flex shrink-0 items-center gap-1 text-sm text-stone-800"><span aria-hidden="true">★</span>{accommodation.rating.toFixed(2)}</span>
         </div>
         <p className="mt-1 text-sm text-stone-600">{accommodation.location}</p>
-        <p className="mt-1 text-sm text-stone-900"><span className="font-semibold">${accommodation.pricePerNight}</span> <span className="text-stone-700">por noche</span></p>
+        <p className="mt-1 text-sm text-stone-900"><span className="font-semibold">{new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(accommodation.pricePerNight)}</span> <span className="text-stone-700">por noche</span></p>
       </div>
     </Link>
   </article>

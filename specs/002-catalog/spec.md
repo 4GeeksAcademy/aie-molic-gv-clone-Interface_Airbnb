@@ -22,8 +22,11 @@ Permitir revisar los alojamientos disponibles, conocer el total presentado, orde
 5. Derivar la lista ordenada desde una copia (p. ej. `[...accommodations].sort(...)`); no mutar el módulo compartido. Para precios iguales, no se exige desempate específico; el orden estable del motor debe conservarse cuando aplique.
 6. Renderizar resultados usando `AccommodationGrid` y `AccommodationCard` compartidos. Cada tarjeta mantiene el enlace `Link` existente a `/rooms/${id}`.
 7. `MapPlaceholder` es una superficie gris con el texto exacto **“Mapa”**. No aparenta ser interactivo.
-8. El placeholder del mapa permanece visible también durante la carga. En móvil (375 px), resultados primero y mapa después; desde 768 px, resultados a la izquierda y mapa a la derecha. Sin overflow horizontal general.
+8. El placeholder del mapa permanece visible también durante la carga. En móvil (375 px), resultados primero y mapa después, sin sticky; desde 768 px, resultados a la izquierda y mapa a la derecha. Sin overflow horizontal general.
 9. Presentación propia consistente con Stayfinder/Home: fondo blanco, texto oscuro, acentos rosa/rojo, bordes redondeados y controles visualmente coherentes con Home. Son decisiones de diseño, no observaciones de una captura de Catálogo.
+10. `AccommodationGrid` admite `layout?: "default" | "catalog"`. El valor por defecto conserva las columnas de Home; Catálogo usa una columna hasta 1023 px y dos desde 1024 px, nunca más de dos. A 768 px el mapa queda a la derecha en una columna más estrecha, con grid de tarjetas de una columna para preservar su ancho. Desde 1024 px las dos zonas son aproximadamente 55% resultados / 45% mapa.
+11. Las tarjetas de Catálogo permiten títulos de hasta dos líneas mediante `titleLines={2}`; Home conserva una línea por defecto. Mantener fotografía, ubicación, valoración y precio. Mostrar euros en ambas vistas con `Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 })`, sin convertir ni editar los valores simulados.
+12. Mapa con fondo gris claro, bordes redondeados y texto exacto “Mapa” centrado, sin interacción. En móvil mide 18rem y no es sticky. Entre 768 y 1023 px conserva altura moderada de 20rem y no es sticky. Desde 1024 px se alinea al inicio de resultados, usa altura `calc(100vh - 130px)` y `position: sticky` con offset superior `top-24`; la altura de viewport ofrece una presencia sostenida al desplazarse, sin estirarse según las filas. Ningún ancestro del mapa debe aplicar `overflow` que bloquee sticky.
 
 ## 3. Componentes, contratos y responsabilidades
 
@@ -39,7 +42,7 @@ Permitir revisar los alojamientos disponibles, conocer el total presentado, orde
 
 ### Relaciones de layout
 
-La página dispone una zona de resultados y una zona de mapa. En móvil usa flujo vertical: navegación → encabezado/selector → lista y tarjetas → mapa. Desde 768 px usa dos columnas: resultados a la izquierda y mapa a la derecha; el mapa permanece visible durante carga. La barra global debe reutilizar la Navbar de Home si es compatible. No se fijan medidas ni sticky behavior no requeridos.
+La página dispone una zona de resultados y una zona de mapa. En móvil usa flujo vertical: navegación → encabezado/selector → lista y tarjetas → mapa. Desde 768 px usa dos columnas: resultados a la izquierda y mapa a la derecha; entre 768–1023 px se prioriza el ancho del listado y se mantiene el grid de tarjetas de una columna. Desde 1024 px las zonas se aproximan a 55/45, el grid admite dos tarjetas y el mapa sticky ocupa `calc(100vh - 130px)` con `top-24`, alineado arriba con resultados. El mapa permanece visible durante carga. Revisar ancestros para evitar overflow que interfiera con sticky.
 
 ## 4. Modelo y estados
 
@@ -59,7 +62,7 @@ La página dispone una zona de resultados y una zona de mapa. En móvil usa fluj
 - [ ] El selector tiene etiqueta/nombre accesible, opciones comprensibles, foco visible y opera con teclado.
 - [ ] Se reutilizan `AccommodationGrid` y `AccommodationCard`, no se crean tarjetas paralelas; sus destinos son `/rooms/${id}` mediante `Link`.
 - [ ] El mapa es un bloque visual no interactivo rotulado exactamente “Mapa”.
-- [ ] A 375 px, el mapa sigue al listado en flujo vertical; a 768 px o más aparece a la derecha del listado, sin overflow horizontal general.
+- [ ] A 375 px, el mapa sigue al listado en flujo vertical y no es sticky; entre 768–1023 px aparece a la derecha junto a una columna de tarjetas; desde 1024 px hay dos tarjetas por fila, zonas cercanas a 55/45 y mapa alto sticky alineado arriba; no hay overflow horizontal general.
 - [ ] Navbar e identidad Stayfinder coherentes con Home; acceso a `/catalog` disponible mediante `Link` con el cambio mínimo necesario.
 - [ ] Presentación blanca y limpia, texto oscuro, acentos rosa/rojo, bordes redondeados y controles coherentes con Home.
 - [ ] `useEffect` de carga limpia el timeout cuando la vista se desmonta.
@@ -67,7 +70,7 @@ La página dispone una zona de resultados y una zona de mapa. En móvil usa fluj
 
 ## 6. Accesibilidad y restricciones
 
-Usar componentes funcionales `const`, TypeScript estricto, Tailwind CSS y `Link` de Next. Selector nativo `<select>` es preferible si satisface presentación/accesibilidad; no añadir una biblioteca UI. Proporcionar etiquetas semánticas al control y al placeholder/mapa (p. ej. región no interactiva con nombre accesible), contraste y foco visibles. No usar estilos inline ni hojas CSS por componente. No instalar dependencias, cambiar configuración ni modificar Home/contexto.
+Usar componentes funcionales `const`, TypeScript estricto, Tailwind CSS y `Link` de Next. Selector nativo `<select>` es preferible si satisface presentación/accesibilidad; no añadir una biblioteca UI. Proporcionar etiquetas semánticas al control y al placeholder/mapa (p. ej. región no interactiva con nombre accesible), contraste y foco visibles. No usar estilos inline ni hojas CSS por componente. No instalar dependencias ni cambiar configuración/contexto. Home conserva su layout y comportamiento; se autoriza únicamente mostrar sus precios en euros mediante la tarjeta compartida.
 
 ## 7. Vision-to-Spec: Catálogo
 

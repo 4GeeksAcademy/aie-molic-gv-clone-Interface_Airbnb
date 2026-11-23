@@ -50,11 +50,21 @@ Reutilizar sin modificar salvo incompatibilidad demostrada: `AccommodationGrid.t
 
 ## 5. Responsive y presentación
 
-- Mobile-first: en 375 px flujo vertical con resultados antes del mapa.
-- Desde 768 px, layout de dos columnas con resultados a la izquierda y mapa a la derecha. Resolver proporciones con clases Tailwind disponibles; no presentarlas como observadas en captura.
-- Placeholder gris con texto exacto “Mapa”; no interactivo.
+- Mobile-first: en 375 px flujo vertical con resultados antes del mapa; el mapa no es sticky.
+- Entre 768 y 1023 px, layout de dos columnas con resultados a la izquierda y mapa a la derecha. Priorizar espacio para el listado, grid de una columna y mapa de altura moderada; no usar sticky.
+- Desde 1024 px, dos zonas de aproximadamente 55% resultados / 45% mapa, con grid de máximo dos tarjetas por fila. Alinear el mapa con el inicio de resultados y usar `lg:sticky lg:top-24 lg:h-[calc(100vh-130px)]`.
+- Placeholder gris claro, redondeado y con texto exacto “Mapa” centrado; no interactivo. Evitar `overflow` en ancestros del mapa que afecte sticky.
 - Fondo blanco, texto oscuro, acentos rosa/rojo, bordes redondeados y controles coherentes con Stayfinder/Home.
 - Revisar si existe overflow horizontal en 375 px y 768+ px; garantizar que el grid mantenga comportamiento apropiado dentro de su columna.
+
+### Ajuste visual solicitado antes del cierre
+
+- Añadir a `AccommodationGrid` la variante opcional `layout="catalog"`; conservar por defecto `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` para Home. Catálogo usa `grid-cols-1 lg:grid-cols-2` y no hereda tres/cuatro columnas.
+- Propagar `titleLines={2}` a las tarjetas de Catálogo; mantener una línea por defecto para Home, con el resto de la tarjeta compartido. Añadir ajuste de palabras y ancho mínimo cero al título ampliado.
+- Permitir que encabezado y selector salten de línea dentro de la columna estrecha sin alterar ordenación ni conteo.
+- Mapa con `h-72` en móvil, `md:h-[20rem]` en tablet y `lg:h-[calc(100vh-130px)]` con `lg:sticky lg:top-24` en escritorio; usar `min-w-0` para evitar overflow.
+- Formatear los precios compartidos como EUR con `Intl.NumberFormat`, sin modificar el dataset. Este es el único cambio visual solicitado que afecta también a Home.
+- Validar tipos, lint y build, y comprobar render de variantes, conteo y ordenación con estados simulados. Sin navegador, no dar por verificadas dimensiones, overflow, foco ni teclado.
 
 ## 6. Accesibilidad y navegación
 
@@ -66,7 +76,7 @@ Preferir `<label>` y `<select>` nativo para `SortSelector`, con opciones clarame
 2. Incorporar o verificar `SortOrder` sin duplicarlo.
 3. Implementar `ResultsHeader`, `SortSelector`, `MapPlaceholder` con interfaces simples, funcionales `const`, Tailwind y accesibilidad básica.
 4. Crear ruta App Router `/catalog`, estado de carga/orden, cleanup y ordenamiento inmutable sobre la fuente común; componer componentes compartidos.
-5. Reutilizar Navbar y facilitar acceso a Catálogo mediante Link con mínima modificación; ajustar layout: lista seguida de mapa en móvil, columnas lista-izquierda/mapa-derecha desde 768 px. Mantener placeholder también durante carga.
+5. Reutilizar Navbar y facilitar acceso a Catálogo mediante Link con mínima modificación; ajustar layout: lista seguida de mapa en móvil, dos zonas desde 768 px y mapa sticky con proporción aproximada 55/45 desde 1024 px. Mantener placeholder también durante carga.
 6. Probar carga, conteo, orden ambos sentidos, igualdad de precios, fuente inmutable, vacío, enlaces `Link`, controles por teclado y posiciones responsive.
 7. Ejecutar `npm run lint`, `npx tsc --noEmit` y `npm run build` según scripts/disponibilidad vigentes. No añadir scripts/dependencias ni editar configuración como atajo.
 
@@ -89,11 +99,13 @@ Usar los scripts disponibles al iniciar; no editar `package.json` ni configuraci
 - Probar estado vacío y permanencia del mapa según layout convenido.
 
 ### Responsive/manual
-- A 375 px, confirmar listado encima del mapa.
-- A 768 px o superior, confirmar listado a la izquierda, mapa a la derecha y ausencia de overflow general.
+- A 375 px, confirmar listado encima del mapa y ausencia de sticky.
+- A 768–1023 px, confirmar dos zonas, tarjetas en una columna y mapa no sticky.
+- Desde 1024 px, confirmar proporción aproximada 55/45, dos tarjetas por fila y mapa alto sticky, alineado arriba con resultados.
+- Inspeccionar ancestros por `overflow` que pueda impedir sticky, ausencia de overflow horizontal y comportamiento al desplazarse con contenido suficiente.
 - Revisar nombres accesibles, foco visible y legibilidad. No declarar la estética como validada mediante captura: no se proporcionó referencia visual de Catálogo.
 
 ## 9. Decisiones pendientes
 
-- Etiquetas exactas accesibles del selector y proporciones/alturas del mapa quedan a validación de implementación; no alteran el orden inicial ascendente ni el breakpoint de 768 px.
+- Orden inicial ascendente permanece confirmado. La proporción 55/45, altura viewport `calc(100vh - 130px)`, sticky `top-24` desde 1024 px, altura moderada en tablet y ausencia de sticky móvil son decisiones aprobadas; su funcionamiento visual sigue pendiente de verificación en navegador.
 - Captura/insumos de Vision-to-Spec para Catálogo siguen pendientes. Las decisiones visuales aprobadas son propias y no autorizan añadir mapa real, filtros, búsqueda ni dependencias.

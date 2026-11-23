@@ -34,16 +34,16 @@ export default function CatalogPage() {
     <div className="min-h-screen bg-white text-stone-900">
       <Navbar searchQuery="" onSearchChange={() => undefined} showSearch={false} />
       <main className="mx-auto max-w-[1600px] px-5 py-7 sm:px-8 lg:px-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)] md:items-start md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1.2fr)_minmax(260px,0.8fr)] md:items-start md:gap-8 lg:grid-cols-[minmax(0,1.22fr)_minmax(0,0.98fr)] lg:gap-10">
           <section aria-label="Resultados de alojamientos" className="min-w-0">
-            <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-5 flex flex-col flex-wrap gap-4 sm:flex-row sm:items-end sm:justify-between">
               <ResultsHeader count={sortedAccommodations.length} />
               <SortSelector value={sortOrder} onChange={setSortOrder} />
             </div>
             {isLoading ? (
               <LoadingIndicator label="Cargando alojamientos…" />
             ) : (
-              <AccommodationGrid accommodations={sortedAccommodations} />
+              <AccommodationGrid accommodations={sortedAccommodations} layout="catalog" />
             )}
           </section>
           <MapPlaceholder />
