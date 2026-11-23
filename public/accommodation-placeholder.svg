@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Alojamiento de ejemplo</title>
+  <desc id="desc">Ilustración original de una casa entre colinas al atardecer</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#dce8e7"/><stop offset="1" stop-color="#f7e8d9"/></linearGradient>
+    <linearGradient id="hill" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#809c8d"/><stop offset="1" stop-color="#45695f"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#sky)"/>
+  <circle cx="930" cy="205" r="92" fill="#f3c789" opacity=".85"/>
+  <path d="M0 570 270 360l230 195 250-260 450 330v275H0Z" fill="#afc1b1"/>
+  <path d="M0 655 300 470l260 205 280-230 360 240v215H0Z" fill="url(#hill)"/>
+  <path d="M0 760q210-105 410 0t400 0 390-16v156H0Z" fill="#c6a98b"/>
+  <g transform="translate(420 390)">
+    <path d="m-55 145 190-150 190 150v230H-55Z" fill="#f8f2e8"/>
+    <path d="m-90 155 225-180 225 180-28 32L135 23-62 187Z" fill="#a45f4c"/>
+    <rect x="100" y="215" width="78" height="160" rx="3" fill="#8b6d58"/>
+    <rect x="-8" y="180" width="72" height="72" rx="3" fill="#9ec2c3"/>
+    <rect x="220" y="180" width="72" height="72" rx="3" fill="#9ec2c3"/>
+    <path d="M28 180v72M-8 216h72M256 180v72m-36-36h72" stroke="#f8f2e8" stroke-width="9"/>
+  </g>
+  <g fill="#345a4f"><path d="M270 720q10-95 70-135 60 40 70 135Z"/><path d="M850 745q8-75 55-110 47 35 55 110Z"/><path d="M925 735q8-65 48-95 40 30 48 95Z"/></g>
+</svg>
