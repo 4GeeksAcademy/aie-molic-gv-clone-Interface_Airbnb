@@ -26,3 +26,5 @@ export interface Accommodation {
   maxGuests: number;
   badge?: string;
 }
+
+export type SortOrder = "asc" | "desc";
