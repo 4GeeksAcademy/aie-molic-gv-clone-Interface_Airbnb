@@ -1,20 +1,25 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { accommodations } from "@/data/accommodations";
+import { accommodations as accommodationData } from "@/data/accommodations";
 import { categories } from "@/data/categories";
 import { AccommodationGrid } from "@/components/listings/AccommodationGrid";
 import { CategoryFilters } from "@/components/listings/CategoryFilters";
 import { Navbar } from "@/components/layout/Navbar";
 import { LoadingIndicator } from "@/components/shared/LoadingIndicator";
+import type { Accommodation } from "@/types/accommodation";
 
 export default function HomePage() {
+  const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIsLoading(false), 900);
+    const timer = window.setTimeout(() => {
+      setAccommodations(accommodationData);
+      setIsLoading(false);
+    }, 900);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -25,7 +30,7 @@ export default function HomePage() {
       const matchesSearch = query.length === 0 || `${accommodation.title} ${accommodation.location}`.toLocaleLowerCase().includes(query);
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [accommodations, searchQuery, selectedCategory]);
 
   return (
     <div className="min-h-screen bg-white text-stone-900">

@@ -125,3 +125,8 @@ Orden inicial confirmado: ascendente (menor a mayor); el mapa permanece visible 
 - Comprobación puntual de render React con estados simulados, sin archivos de test ni dependencias nuevas: columnas/clases por variante, títulos, euros, ascendente/descendente, conteo, array original congelado sin mutación, carga con mapa y vacío correctos. `Link` e `Image` se sustituyeron por elementos HTML en esta comprobación: no valida el navegador ni el optimizador de imágenes.
 - `npx tsc --noEmit`, lint de archivos afectados, `npm run lint`, `npm run build` y `git diff --check`: correctos para este ajuste.
 - Pendientes en navegador: Home y Catálogo a 375/768/1023/1024/1440 px, legibilidad de títulos y fotografías, altura y sticky del mapa con scroll suficiente, ausencia de overflow, interacción del selector y teclado. CAT-009, CAT-010 y CAT-012 siguen sin marcar; no se ha inspeccionado ninguna captura.
+
+### Auditoría final automatizada
+- Reejecutados en esta auditoría: `npx tsc --noEmit`, `npm run lint`, `npm run build` y `git diff --check`; todos finalizaron correctamente.
+- Se revisó el código y su composición responsive de forma estática. No se ejecutó prueba manual de navegador: no hay Chromium/Chrome/Firefox disponible.
+- CAT-009, CAT-010 y CAT-012 permanecen pendientes para inspección real de viewports, interacción de teclado/navegación y recorrido funcional; no se han marcado por inferencia.

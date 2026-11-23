@@ -141,6 +141,12 @@
 - `AccommodationCard` conserva su estructura y Link; mantiene imagen grande `object-cover` con esquinas redondeadas, corazón y badge decorativos, título/valoración, ubicación y precio.
 - **Validación de esta actualización:** las seis fotos locales son JPEG válidos; las siete referencias de imagen de los datos (seis alojamientos y avatar) existen y no hay URLs externas. `npx tsc --noEmit`, `npm run lint`, `npm run build` y `git diff --check` finalizaron correctamente. No se encontró navegador Chromium/Chrome disponible en el entorno, por lo que no se ejecutó validación visual/interactiva a 375, 768 px o escritorio. HOME-014 y HOME-016 siguen pendientes de esa comprobación manual y del recorrido funcional completo.
 
+## Auditoría final automatizada
+
+- Se corrigió `app/page.tsx` para que el estado de alojamientos comience vacío y se llene al completar el timeout simulado de 900 ms, tal como exige HOME-011. Los filtros se derivan del estado cargado.
+- Reejecutados: `npx tsc --noEmit`, `npm run lint`, `npm run build` y `git diff --check`; todos finalizaron correctamente.
+- No hay navegador Chromium/Chrome/Firefox en el entorno. HOME-014 y HOME-016 permanecen pendientes de comprobación responsive y recorrido funcional manual; no se marcan como verificados.
+
 ## Mejoras visuales y extensiones fuera de tareas obligatorias
 
 Las mejoras P1 visuales ya están aprobadas y forman parte de HOME-006, HOME-009 y HOME-014, sin interacciones nuevas. No crear tareas separadas para ellas. Las extensiones P2 siguen fuera del MVP y requieren aprobación expresa y una tarea nueva con identificador:
